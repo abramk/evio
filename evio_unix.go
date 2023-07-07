@@ -2,6 +2,7 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
 
+//go:build darwin || netbsd || freebsd || openbsd || dragonfly || linux
 // +build darwin netbsd freebsd openbsd dragonfly linux
 
 package evio
@@ -330,7 +331,7 @@ func loopUDPRead(s *server, l *loop, lnidx, fd int) error {
 		out, action := s.events.Data(c, in)
 		if len(out) > 0 {
 			if s.events.PreWrite != nil {
-				s.events.PreWrite()
+				s.events.PreWrite(c)
 			}
 			syscall.Sendto(fd, out, 0, sa)
 		}
@@ -368,7 +369,7 @@ func loopOpened(s *server, l *loop, c *conn) error {
 
 func loopWrite(s *server, l *loop, c *conn) error {
 	if s.events.PreWrite != nil {
-		s.events.PreWrite()
+		s.events.PreWrite(c)
 	}
 	n, err := syscall.Write(c.fd, c.out)
 	if err != nil {
