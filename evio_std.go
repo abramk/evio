@@ -381,7 +381,7 @@ func stdloopRead(s *stdserver, l *stdloop, c *stdconn, in []byte) error {
 		out, action := s.events.Data(c, in)
 		if len(out) > 0 {
 			if s.events.PreWrite != nil {
-				s.events.PreWrite()
+				s.events.PreWrite(c)
 			}
 			c.conn.Write(out)
 		}
@@ -402,7 +402,7 @@ func stdloopReadUDP(s *stdserver, l *stdloop, c *stdudpconn) error {
 		out, action := s.events.Data(c, c.in)
 		if len(out) > 0 {
 			if s.events.PreWrite != nil {
-				s.events.PreWrite()
+				s.events.PreWrite(c)
 			}
 			s.lns[c.addrIndex].pconn.WriteTo(out, c.remoteAddr)
 		}
@@ -436,7 +436,7 @@ func stdloopAccept(s *stdserver, l *stdloop, c *stdconn) error {
 		out, opts, action := s.events.Opened(c)
 		if len(out) > 0 {
 			if s.events.PreWrite != nil {
-				s.events.PreWrite()
+				s.events.PreWrite(c)
 			}
 			c.conn.Write(out)
 		}

@@ -114,7 +114,7 @@ type Events struct {
 	// and should be closed when it's no longer needed.
 	Detached func(c Conn, rwc io.ReadWriteCloser) (action Action)
 	// PreWrite fires just before any data is written to any client socket.
-	PreWrite func()
+	PreWrite func(c Conn)
 	// Data fires when a connection sends the server data.
 	// The in parameter is the incoming data.
 	// Use the out return value to write data to the connection.
@@ -129,13 +129,14 @@ type Events struct {
 // Addresses should use a scheme prefix and be formatted
 // like `tcp://192.168.0.10:9851` or `unix://socket`.
 // Valid network schemes:
-//  tcp   - bind to both IPv4 and IPv6
-//  tcp4  - IPv4
-//  tcp6  - IPv6
-//  udp   - bind to both IPv4 and IPv6
-//  udp4  - IPv4
-//  udp6  - IPv6
-//  unix  - Unix Domain Socket
+//
+//	tcp   - bind to both IPv4 and IPv6
+//	tcp4  - IPv4
+//	tcp6  - IPv6
+//	udp   - bind to both IPv4 and IPv6
+//	udp4  - IPv4
+//	udp6  - IPv6
+//	unix  - Unix Domain Socket
 //
 // The "tcp" network scheme is assumed when one is not specified.
 func Serve(events Events, addr ...string) error {
